@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="styles.css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <div class="loader">
+        <div class="middle">
+            <div class="bar bar1"></div>
+            <div class="bar bar2"></div>
+            <div class="bar bar3"></div>
+            <div class="bar bar4"></div>
+            <div class="bar bar5"></div>
+            <div class="bar bar6"></div>
+            <div class="bar bar7"></div>
+            <div class="bar bar8"></div>
+        </div>
+
+    </div>
+    <div class="container">
+        <img src="src/qr.png" width="40px" height="40px">
+        <h1>QR Code Generator</h1>
+        <input type="text" id="textInput" placeholder="Enter text here.." />
+        <button id="btn" onclick="generateQRCode()">Generate QR Code</button>
+        <div id="qrcode"></div>
+        <div class="sameline">
+            <button id="downloadButton" style="display: none;">Download QR
+                Code</button>
+            <button id="reloadbutton" style="display: none;" onclick="reloadPage()">Reload</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script>
+        function reloadPage() {
+            location.reload();
+        }
+
+        function generateQRCode() {
+            const text = document.getElementById('textInput').value;
+            if (text.trim() === '') {
+                alert('Please enter some text.');
+                return;
+            }
+
+            // Clear previous QR code
+            const qrCodeDiv = document.getElementById('qrcode');
+            qrCodeDiv.innerHTML = '';
+
+            // Generate new QR code
+            $(qrCodeDiv).qrcode({ text: text });
+
+            // Show the download button
+            document.getElementById('downloadButton').style.display = 'block';
+            document.getElementById('reloadbutton').style.display = 'block';
+
+
+            // Prepare the QR code for download
+            const qrCodeCanvas = qrCodeDiv.querySelector('canvas');
+            if (qrCodeCanvas) {
+                const downloadButton = document.getElementById('downloadButton');
+                downloadButton.onclick = function () {
+                    const dataUrl = qrCodeCanvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = 'qrcode.png';
+                    link.click();
+                };
+            }
+        }
+        document.getElementById('btn').addEventListener('click', function () {
+            this.classList.add("loading");
+            this.innerHTML = "<span class='icon'>&#8635;</span>Generating..";
+            setTimeout(() => {
+                this.innerHTML = "Generated"
+            }, 500);
+
+        });
+        window.addEventListener("load", () => {
+            const loader = document.querySelector(".loader");
+            loader.classList.add("loader-hidden");
+            loader.addEventListener("transtionend", () => {
+                document.body.removeChild("loader"), duration;
+
+            })
+        })
+    </script>
+</body>
+
+</html>
